@@ -48,7 +48,7 @@ def print_progress(val, val_len, folder, sub_folder, filename, bar_size=10):
 # -------------------- Load Dataset ------------------------
 
 
-dataset_dir = "DATASET/"
+dataset_dir = "../img_she_healthy/DATASET"
 
 imgs = []  # list image matrix
 labels = []
@@ -69,8 +69,8 @@ for folder in os.listdir(dataset_dir):
 
             print_progress(i, len_sub_folder, folder, sub_folder, filename)
 
-# ----------------- calculate greycomatrix() & greycoprops() for angle 0, 45, 90, 135 ----------------------------------
-def calc_glcm_all_agls(img, label, props, dists=[5], agls=[0, np.pi / 4, np.pi / 2, 3 * np.pi / 4], lvl=256, sym=True,
+# ----------------- calculate greycomatrix() & greycoprops() for angle 0, 45, 90, 135, 180, 225 -----------------------
+def calc_glcm_all_agls(img, label, props, dists=[4], agls=[0, np.pi / 4, np.pi / 2, 3 * np.pi / 4], lvl=256, sym=True,
                        norm=True):
     glcm = greycomatrix(img,
                         distances=dists,
@@ -105,7 +105,6 @@ for name in properties:
         columns.append(name + "_" + ang)
 
 columns.append("label")
-
 
 glcm_df = pd.DataFrame(glcm_all_agls,
                       columns = columns)
