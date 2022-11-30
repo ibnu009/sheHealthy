@@ -68,7 +68,7 @@ max_len = X_train.shape[1]
 
 print("Maks len adalah ", max_len)
 
-EPOCHS = 200
+EPOCHS = 100
 BATCH_SIZE = 32
 
 model = nn_model(max_len)
@@ -78,7 +78,7 @@ evaluate_model_(history)
 # predict test data
 y_pred = model.predict(X_test)
 
-print("Hasil predict raw adalah ", y_pred)
+# print("Hasil predict raw adalah ", y_pred)
 print("Hasil predict adalah ", y_pred.argmax(axis=1))
 
 # Compute confusion matrix
