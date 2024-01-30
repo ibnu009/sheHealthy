@@ -6,11 +6,12 @@ import tensorflow as tf
 import keras
 from numpy import array
 
+
+# Ini prediksinya
 class_predictions = array([
     'NORMAL',
-    'PRE CANCER',
+    'PRECANCER',
 ])
-
 
 def read_imagefile(file) -> Image.Image:
     image = Image.open(BytesIO(file))
@@ -18,7 +19,9 @@ def read_imagefile(file) -> Image.Image:
 
 
 def predict(image: Image.Image):
-    model = keras.models.load_model("./cnn/my_h5_model.h5")
+    # Ini model hasil dari load_data.py ya, kamu perlu training dulu di PC mu, setelah itu baru kamu ganti pathnya
+    # sesuai dengan nama modelmu
+    model = keras.models.load_model("./cnn/my_h5_model_backup.h5")
 
     image = np.asarray(image.resize((64, 64)))[..., :3]
 

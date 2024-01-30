@@ -20,6 +20,7 @@ glcm = greycomatrix(input_matrix,
 
 print(glcm[:, :, 0, 0])
 
+
 # -------------------- Utility function ------------------------
 
 
@@ -35,6 +36,7 @@ def normalize_desc(folder, sub_folder):
     text = re.sub(r'\d+', '', text)
     text = text.replace(".", "")
     text = text.strip()
+    text = text.strip()
     return text
 
 
@@ -44,6 +46,7 @@ def print_progress(val, val_len, folder, sub_folder, filename, bar_size=10):
         print("", end="\n")
     else:
         print("[%s] folder : %s/%s/ ----> file : %s" % (progr, folder, sub_folder, filename), end="\r")
+
 
 # -------------------- Load Dataset ------------------------
 
@@ -55,6 +58,7 @@ imgsx = []  # list image matrix
 
 labels = []
 descs = []
+
 for folder in os.listdir(dataset_dir):
     for sub_folder in os.listdir(os.path.join(dataset_dir, folder)):
         sub_folder_files = os.listdir(os.path.join(dataset_dir, folder, sub_folder))
@@ -74,8 +78,15 @@ for folder in os.listdir(dataset_dir):
 
             print_progress(i, len_sub_folder, folder, sub_folder, filename)
 
+
+cv2.imshow('image', imgsx[0])
+cv2.waitKey(0)
+
+
 # ----------------- calculate GLCM for angle 0, 45, 90, 135 -----------------------
-def calc_glcm_all_agls(img, label, props, dists=[5], agls=[0, np.pi / 4, np.pi / 2, 3 * np.pi / 4], lvl=256, sym=True,
+properties = ['contrast', 'dissimilarity', 'energy', 'correlation']
+angles = ['0', '45', '90', '135']
+def calc_glcm_all_agls(img, label, props, dists=[1], agls=[0, np.pi / 4, np.pi / 2, 3 * np.pi / 4], lvl=256, sym=True,
                        norm=True):
     glcm = greycomatrix(img,
                         distances=dists,
@@ -93,9 +104,9 @@ def calc_glcm_all_agls(img, label, props, dists=[5], agls=[0, np.pi / 4, np.pi /
 
 
 # ----------------- call calc_glcm_all_agls() for all properties ----------------------------------
-properties = ['contrast', 'correlation', 'homogeneity', 'energy']
-
+columns = []
 glcm_all_agls = []
+
 for img, label in zip(imgs, labels):
     glcm_all_agls.append(
         calc_glcm_all_agls(img,
@@ -103,8 +114,6 @@ for img, label in zip(imgs, labels):
                            props=properties)
     )
 
-columns = []
-angles = ['0', '45', '90', '135']
 for name in properties:
     for ang in angles:
         columns.append(name + "_" + ang)
@@ -112,12 +121,9 @@ for name in properties:
 columns.append("label")
 
 glcm_df = pd.DataFrame(glcm_all_agls,
-                      columns = columns)
+                       columns=columns)
 
-#save to csv
+# save to csv
 glcm_df.to_csv("glcm_cervix.csv")
 
 glcm_df.head(7)
-
-
-

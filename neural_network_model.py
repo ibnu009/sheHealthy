@@ -26,7 +26,7 @@ def recall(y_true, y_pred):
 
 
 # --------------------------- create model -------------------------------
-def nn_model(max_len):
+def nn_model():
     model = Sequential()
 
     model.add(Conv2D(filters=64, kernel_size=(3, 3), name='conv0', padding='same', activation='relu',
@@ -59,6 +59,55 @@ def nn_model(max_len):
     return model
 
 
+def nn_model_new():
+    # Define the input layer
+    input_layer = keras.layers.Input(shape=(64, 64, 3))
+    model = Sequential()
+    # the first block of convolutional and max pooling layers
+    model.add(Conv2D(filters=64, kernel_size=(3, 3), name='conv0', padding='same', activation='relu',
+                     input_shape=(64, 64, 3)))
+    model.add(Conv2D(64, (3, 3), padding="same", activation="relu"))
+    model.add(MaxPooling2D(pool_size=(2, 2), strides=(2, 2)))
+
+    # the second block of convolutional and max pooling layers
+    model.add(Conv2D(128, (3, 3), padding="same", activation="relu"))
+    model.add(Conv2D(128, (3, 3), padding="same", activation="relu"))
+    model.add(MaxPooling2D(pool_size=(2, 2), strides=(2, 2)))
+
+    # the third block of convolutional and max pooling layers
+    model.add(Conv2D(256, (3, 3), padding="same", activation="relu"))
+    model.add(Conv2D(256, (3, 3), padding="same", activation="relu"))
+    model.add(Conv2D(256, (3, 3), padding="same", activation="relu"))
+    model.add(MaxPooling2D(pool_size=(2, 2), strides=(2, 2)))
+
+    # the fourth block of convolutional and max pooling layers
+    model.add(Conv2D(512, (3, 3), padding="same", activation="relu"))
+    model.add(Conv2D(512, (3, 3), padding="same", activation="relu"))
+    model.add(Conv2D(512, (3, 3), padding="same", activation="relu"))
+    model.add(MaxPooling2D(pool_size=(2, 2), strides=(2, 2)))
+
+    # the fifth block of convolutional and max pooling layers
+    model.add(Conv2D(512, (3, 3), padding="same", activation="relu"))
+    model.add(Conv2D(512, (3, 3), padding="same", activation="relu"))
+    model.add(Conv2D(512, (3, 3), padding="same", activation="relu"))
+    model.add(MaxPooling2D(pool_size=(2, 2), strides=(2, 2)))
+
+    model.add(Flatten())
+    model.add(Dropout(0.5))
+    model.add(Dense(units=4096, activation="relu"))
+    model.add(Dropout(0.5))
+    model.add(Dense(units=4096, activation="relu"))
+    model.add(Dropout(0.5))
+    model.add(Dense(units=2, activation="sigmoid"))
+
+    model.summary()
+
+    model.compile(loss='categorical_crossentropy',
+                  optimizer=Adam(learning_rate=0.001),
+                  metrics=['accuracy'])
+
+    return model
+
 # ------------------------- check model -----------------------------
 
 checkpoint_path = "best_model.h5"
@@ -85,7 +134,7 @@ def check_model(model_, x, y, x_val, y_val, epochs_, batch_size_):
                       callbacks=cb
                       )
 
-    model_.save("my_h5_model.h5")
+    model_.save("cervix_vgg16_model.h5")
 
     return hist
 
@@ -130,7 +179,7 @@ def check_model_new(model_, train_data, val_data, epochs_, batch_size):
         verbose=2,
         callbacks=[lr_schedule, callback])
 
-    model_.save("my_h5_model.h5")
+    model_.save("cervix_model_test.h5")
 
     return history
 
